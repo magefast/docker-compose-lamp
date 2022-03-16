@@ -68,8 +68,27 @@ RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ 
 RUN docker-php-ext-install -j$(nproc) gd
 
+
+RUN apt-get install -y ssl-cert
+
+#RUN apt-get install libsodium-dev -y
+#RUN docker-php-ext-install sodium
+
+RUN apt install -y libsodium-dev
+RUN docker-php-ext-configure sodium
+RUN docker-php-ext-install sodium
+#RUN pecl install libsodium-2.0.21
+RUN docker-php-ext-enable sodium
+
+
+#RUN apt-get update \
+# && DEBIAN_FRONTEND=noninteractive apt-get install -y ssl-cert \
+# && rm -r /var/lib/apt/lists/* \
+
 # Enable apache modules
-RUN a2enmod rewrite headers expires
+RUN a2enmod rewrite headers expires ssl
+RUN a2ensite default-ssl
+
 
 # MCRYPT
 RUN apt-get update -y && \
@@ -81,3 +100,15 @@ RUN apt-get update -y && \
 RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
 RUN printf "\n" | pecl install imagick
 RUN docker-php-ext-enable imagick
+
+
+# SSL
+RUN mkdir /etc/apache2/ssl
+RUN openssl req -new -x509 -nodes -out /etc/apache2/ssl/server.pem -keyout /etc/apache2/ssl/server.key -days 3650 -subj '/CN=xxx.localhost'
+
+
+# Setup Apache2 mod_ssl
+RUN a2enmod ssl
+
+# Setup Apache2 HTTPS env
+RUN a2ensite default-ssl.conf
