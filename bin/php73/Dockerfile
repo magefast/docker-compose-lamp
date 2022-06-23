@@ -1,7 +1,7 @@
 #Quickfix - Basebox for PHP7.2 Library now uses Debian "10" Buster, superceeding #libcurl3, stretch is most compatible at this time whilst devs workout backport.
 #https://github.com/docker-library/php/issues/865
 
-FROM php:7.2-apache-stretch
+FROM php:7.3-apache-stretch
 
 #Surpresses debconf complaints of trying to install apt packages interactively
 #https://github.com/moby/moby/issues/4032#issuecomment-192327844
@@ -21,8 +21,16 @@ RUN apt-get -y install --fix-missing apt-utils build-essential git curl libcurl3
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install xdebug
-RUN pecl install xdebug-2.6.0
-RUN docker-php-ext-enable xdebug
+#RUN pecl install xdebug-2.6.0
+#RUN docker-php-ext-enable xdebug
+
+#RUN pecl install oauth
+#RUN docker-php-ext-enable oauth
+#
+#RUN apt-get -y install php-oauth
+#
+#RUN pecl install oauth \
+#        && docker-php-ext-enable oauth
 
 # Install redis
 RUN pecl install redis-4.0.1
@@ -39,7 +47,9 @@ RUN docker-php-ext-install curl
 RUN docker-php-ext-install tokenizer
 RUN docker-php-ext-install json
 
-RUN apt-get -y install zlib1g-dev
+RUN apt-get update && apt-get install -y \
+    zlib1g-dev \
+    libzip-dev
 RUN docker-php-ext-install zip
 
 RUN apt-get -y install libicu-dev
@@ -93,7 +103,7 @@ RUN a2ensite default-ssl
 # MCRYPT
 RUN apt-get update -y && \
     apt-get install -y libmcrypt-dev && \
-    pecl install mcrypt-1.0.1 && \
+    pecl install mcrypt-1.0.2 && \
     docker-php-ext-enable mcrypt
 
 # IMAGICK
