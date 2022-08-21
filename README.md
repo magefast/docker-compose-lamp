@@ -8,7 +8,6 @@ A basic LAMP stack environment built using Docker Compose. It consists of the fo
 * PHP
 * Apache
 * MySQL
-* phpMyAdmin
 * Redis
 
 As of now, we have several different PHP versions. Use appropriate php version as needed:
@@ -155,13 +154,6 @@ May differ for PHP Versions <7.x.x
 > If you want to install more extension, just update `./bin/webserver/Dockerfile`. You can also generate a PR and we will merge if it seems good for general purpose.
 > You have to rebuild the docker image by running `docker-compose build` and restart the docker containers.
 
-## phpMyAdmin
-
-phpMyAdmin is configured to run on port 8080. Use following default credentials.
-
-http://localhost:8080/  
-username: root  
-password: tiger
 
 ## Redis
 
